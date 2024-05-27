@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Tags;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CategoryController extends BaseController
+class TagController extends BaseController
 {
-    protected $base_route = 'admin.category.index';
-    protected $view_path = 'admin.category';
-    protected $panel = 'Category';
+    protected $base_route = 'admin.tags.index';
+    protected $view_path = 'admin.tags';
+    protected $panel = 'Tags';
     protected $model;
 
     public function __construct()
     {
-        $this->model = new Category;
+        $this->model = new Tags;
     }
     public function index()
     {
-        $data['row'] = DB::table('categories')->get();
+        $data['row'] = DB::table('tags')->get();
         return view(parent::loadDefaultDataToView($this->view_path . '.index'), compact('data'));
     }
     public function create()
@@ -37,8 +37,6 @@ class CategoryController extends BaseController
 
         $model              = $this->model;
         $model->name        = $request->name;
-        $model->description = $request->description;
-        $model->status      = $model->status ? true : false;
 
         $success            = $model->save();
 
@@ -65,8 +63,6 @@ class CategoryController extends BaseController
         $data = $this->model::findorFail($id);
 
         $data->name           = $request->name;
-        $data->description     = $request->description;
-        $data->status          = $request->status ? true : false;
 
         $success = $data->save();
 
