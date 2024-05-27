@@ -12,7 +12,7 @@ class Tags extends Model
     public function getRules(array $validate)
     {
         return validator($validate, [
-            'name' => 'required | string | min:2 | max:100',
+            'name' => 'required | string | min:2 | max:100 | unique:tags',
         ]);
     }
     public function posts()

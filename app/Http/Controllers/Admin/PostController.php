@@ -15,15 +15,18 @@ class PostController extends BaseController
     protected $view_path = "admin.post";
     protected $panel = "Post";
     protected $model;
+
     public function __construct()
     {
         $this->model = new Posts;
     }
+
     public function index()
     {
         $data['row'] = Posts::with(['user', 'category'])->get();
         return view(parent::loadDefaultDataToView($this->view_path . '.index'), compact('data'));
     }
+
     public function create()
     {
         $category = $this->model->getCategory();
@@ -34,6 +37,7 @@ class PostController extends BaseController
         ];
         return view(parent::loadDefaultDataToView($this->view_path . '.create'), compact('data'));
     }
+
     public function store(Request $request)
     {
         // Validate the request data
@@ -87,18 +91,13 @@ class PostController extends BaseController
             return redirect()->back()->withErrors(['tags' => 'Tag sync failed.'])->withInput();
         }
     }
+
     public function view(Request $request, $id)
     {
-        $data = [];
-
-        // works but more lines of code
-        // $data['user'] = $this->model->getUser();
-        // $data['category'] = $this->model->getCategory();
-        // $data['row'] = $this->model::findOrFail($id);
-
         $data['row'] = Posts::with(['user', 'category', 'tags'])->findOrFail($id);
         return view(parent::loadDefaultDataToView($this->view_path . '.view'), compact('data'));
     }
+
     public function edit($id)
     {
         $data = [];
@@ -107,6 +106,7 @@ class PostController extends BaseController
         $data['row'] = $this->model->findOrFail($id);
         return view(parent::loadDefaultDataToView($this->view_path . '.edit'), compact('data'));
     }
+
     public function update(Request $request, $id)
     {
         $validator = $this->model->getRules($request->all());
@@ -145,6 +145,7 @@ class PostController extends BaseController
             $data->tags()->sync($request->tags);
             DB::commit();
 
+            // Set the update success message and redirect
             $request->session()->flash('update_success', $this->panel . ' successfully updated.');
             return redirect()->route($this->base_route);
         } catch (\Exception $e) {
@@ -153,6 +154,7 @@ class PostController extends BaseController
             return redirect()->back()->withErrors(['tags' => 'Tag sync failed.'])->withInput();
         }
     }
+
     public function delete($id)
     {
         $model = $this->model;
@@ -168,6 +170,7 @@ class PostController extends BaseController
         $success = $data->delete();
 
         if ($success) {
+            // Set the delete success message and redirect
             return redirect()->route($this->base_route)->with('delete_success', $this->panel . ' successfully deleted.');
         }
     }

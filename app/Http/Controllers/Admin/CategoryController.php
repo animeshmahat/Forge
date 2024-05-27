@@ -18,15 +18,18 @@ class CategoryController extends BaseController
     {
         $this->model = new Category;
     }
+
     public function index()
     {
         $data['row'] = DB::table('categories')->get();
         return view(parent::loadDefaultDataToView($this->view_path . '.index'), compact('data'));
     }
+
     public function create()
     {
         return view(parent::loadDefaultDataToView($this->view_path . '.create'));
     }
+
     public function store(Request $request)
     {
         $validator = $this->model->getRules($request->all());
@@ -35,26 +38,29 @@ class CategoryController extends BaseController
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $model              = $this->model;
-        $model->name        = $request->name;
+        $model = $this->model;
+        $model->name = $request->name;
         $model->description = $request->description;
-        $model->status      = $model->status ? true : false;
+        $model->status = $request->status ? true : false;
 
-        $success            = $model->save();
+        $success = $model->save();
 
         if ($success) {
             $request->session()->flash('success', $this->panel . ' successfully added.');
             return redirect()->route($this->base_route);
         } else {
+            $request->session()->flash('error', $this->panel . ' could not be added.');
             return redirect()->route($this->base_route);
         }
     }
+
     public function edit($id)
     {
         $data = [];
         $data['row'] = $this->model->findOrFail($id);
         return view(parent::loadDefaultDataToView($this->view_path . '.edit'), compact('data'));
     }
+
     public function update(Request $request, $id)
     {
         $validator = $this->model->getRules($request->all());
@@ -62,11 +68,10 @@ class CategoryController extends BaseController
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $this->model::findorFail($id);
-
-        $data->name           = $request->name;
-        $data->description     = $request->description;
-        $data->status          = $request->status ? true : false;
+        $data = $this->model::findOrFail($id);
+        $data->name = $request->name;
+        $data->description = $request->description;
+        $data->status = $request->status ? true : false;
 
         $success = $data->save();
 
@@ -74,9 +79,11 @@ class CategoryController extends BaseController
             $request->session()->flash('update_success', $this->panel . ' successfully updated.');
             return redirect()->route($this->base_route);
         } else {
+            $request->session()->flash('error', $this->panel . ' could not be updated.');
             return redirect()->route($this->base_route);
         }
     }
+
     public function delete($id)
     {
         $model = $this->model;
@@ -84,7 +91,7 @@ class CategoryController extends BaseController
         $success = $data->delete();
 
         if ($success) {
-            return redirect()->route($this->base_route)->with('delete_success', $this->panel . ' deleted successfully.');
+            return redirect()->route($this->base_route)->with('delete_success', $this->panel . ' successfully deleted.');
         }
     }
 }

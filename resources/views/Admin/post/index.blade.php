@@ -12,6 +12,9 @@
         border-radius: 5px;
     }
 </style>
+
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 @endsection
 
 @section('content')
@@ -20,28 +23,13 @@
 
 <a href="{{ route('admin.post.create') }}" class="btn btn-sm btn-success mb-2"><i class="fa fa-plus"></i> Add {{$_panel}}</a>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<!-- Hidden element to pass session data to JavaScript -->
+<div id="session-data" data-success="{{ session('success') }}" data-update-success="{{ session('update_success') }}" data-delete-success="{{ session('delete_success') }}">
 </div>
-@endif
-@if(session('update_success'))
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    {{ session('update_success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
-@if(session('delete_success'))
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    {{ session('delete_success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header">
         <h6 class="m-0 font-weight-bold text-primary">Category Table</h6>
     </div>
     <div class="card-body">
@@ -88,12 +76,16 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('admin.post.view', ['id' => $row->id]) }}" class="btn btn-primary btn-sm m-1"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View</a>
-                            <a href="{{ route('admin.post.edit', ['id' => $row->id]) }}" class="btn btn-warning btn-sm m-1"><i class="fa fa-pen"></i>&nbsp;Edit</a>
-                            <a href="{{ route('admin.post.delete', ['id' => $row->id]) }}" class="btn btn-danger btn-sm m-1" onclick="return confirm('Permanently delete this record?')"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Delete</a>
+                            <div class="d-flex flex-row align-items-center">
+                                <a href="{{ route('admin.post.view', ['id' => $row->id]) }}" class="btn btn-primary btn-sm m-1"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View</a>
+                                <a href="{{ route('admin.post.edit', ['id' => $row->id]) }}" class="btn btn-warning btn-sm m-1"><i class="fa fa-pen"></i>&nbsp;Edit</a>
+                                <a href="{{ route('admin.post.delete', ['id' => $row->id]) }}" class="btn btn-danger btn-sm m-1" onclick="return confirm('Permanently delete this record?')"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Delete</a>
+                            </div>
                         </td>
                     </tr>
                     @endforeach
+                    @elseif(count($data['row']) == 0)
+                    <h3>No records found.</h3>
                     @endif
                 </tbody>
             </table>
@@ -103,7 +95,23 @@
 @endsection
 
 @section('js')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="{{ asset('assets/admin/js/datatables-simple-demo.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<!-- Toastr JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sessionData = document.getElementById('session-data');
+        const successMessage = sessionData.getAttribute('data-success');
+        const updateSuccessMessage = sessionData.getAttribute('data-update-success');
+        const deleteSuccessMessage = sessionData.getAttribute('data-delete-success');
+
+        if (successMessage) {
+            toastr.success(successMessage);
+        }
+        if (updateSuccessMessage) {
+            toastr.info(updateSuccessMessage);
+        }
+        if (deleteSuccessMessage) {
+            toastr.warning(deleteSuccessMessage);
+        }
+    });
+</script>
 @endsection

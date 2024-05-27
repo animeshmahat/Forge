@@ -9,6 +9,18 @@
     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
 </div>
 
+@if(session('update_success'))
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {{ session('update_success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+@if(session('password_update'))
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    {{ session('password_update') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
 <!-- Content Row -->
 <div class="row">
 

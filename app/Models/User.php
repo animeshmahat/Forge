@@ -20,8 +20,25 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'image',
         'password',
+        'username',
+        'mobile',
+        'status'
     ];
+
+    public function getRules(array $validate)
+    {
+        return validator($validate, [
+            'name'          => 'required|max:40|min:2',
+            'email'         => 'required|email|unique:users',
+            'image'         => 'image|required|mimes:jpeg,png,jpg,gif,svg|max:5000',
+            'password'      => 'required|min:6|max:50|same:confirm-password',
+            'username'      => 'required|username|unique:users',
+            'mobile'        => 'required|max:20|min:7|mobile|unique:users',
+            'status'        => 'boolean'
+        ]);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

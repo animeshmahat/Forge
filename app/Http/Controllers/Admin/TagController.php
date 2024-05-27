@@ -7,9 +7,9 @@ use App\Models\Tags;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TagController extends BaseController
+class TagController extends Controller
 {
-    protected $base_route = 'admin.tags.index';
+    protected $base_route = 'tags.index';
     protected $view_path = 'admin.tags';
     protected $panel = 'Tags';
     protected $model;
@@ -18,69 +18,50 @@ class TagController extends BaseController
     {
         $this->model = new Tags;
     }
+
     public function index()
     {
         $data['row'] = DB::table('tags')->get();
-        return view(parent::loadDefaultDataToView($this->view_path . '.index'), compact('data'));
+        return view($this->view_path . '.index', compact('data'));
     }
-    public function create()
-    {
-        return view(parent::loadDefaultDataToView($this->view_path . '.create'));
-    }
+
     public function store(Request $request)
     {
         $validator = $this->model->getRules($request->all());
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json(['error' => $validator->errors()->all()], 422);
         }
 
-        $model              = $this->model;
-        $model->name        = $request->name;
-
-        $success            = $model->save();
-
-        if ($success) {
-            $request->session()->flash('success', $this->panel . ' successfully added.');
-            return redirect()->route($this->base_route);
-        } else {
-            return redirect()->route($this->base_route);
+        $tags = explode(',', $request->name);
+        foreach ($tags as $tag) {
+            $model = new Tags;
+            $model->name = trim($tag);
+            $model->save();
         }
+
+        return response()->json(['success' => 'Tags successfully added.']);
     }
-    public function edit($id)
-    {
-        $data = [];
-        $data['row'] = $this->model->findOrFail($id);
-        return view(parent::loadDefaultDataToView($this->view_path . '.edit'), compact('data'));
-    }
+
     public function update(Request $request, $id)
     {
         $validator = $this->model->getRules($request->all());
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json(['error' => $validator->errors()->all()], 422);
         }
 
-        $data = $this->model::findorFail($id);
+        $data = $this->model::findOrFail($id);
+        $data->name = $request->name;
+        $data->save();
 
-        $data->name           = $request->name;
-
-        $success = $data->save();
-
-        if ($success) {
-            $request->session()->flash('update_success', $this->panel . ' successfully updated.');
-            return redirect()->route($this->base_route);
-        } else {
-            return redirect()->route($this->base_route);
-        }
+        return response()->json(['success' => 'Tag successfully updated.']);
     }
+
     public function delete($id)
     {
-        $model = $this->model;
-        $data = $model::findOrFail($id);
-        $success = $data->delete();
+        $data = $this->model::findOrFail($id);
+        $data->delete();
 
-        if ($success) {
-            return redirect()->route($this->base_route)->with('delete_success', $this->panel . ' deleted successfully.');
-        }
+        return response()->json(['success' => 'Tag deleted successfully.']);
     }
 }

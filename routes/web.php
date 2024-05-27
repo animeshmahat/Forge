@@ -26,15 +26,14 @@ Route::group(['prefix' => '/admin',             'as' => 'admin.', 'middleware' =
         Route::get('/delete/{id}',              [App\Http\Controllers\Admin\CategoryController::class, 'delete'])->name('delete');
     });
 
-    //Tags routes
-    Route::group(['prefix' => 'tags',       'as' => 'tags.'], function () {
-        Route::get('/',                         [App\Http\Controllers\Admin\TagController::class, 'index'])->name('index');
-        Route::get('/create',                   [App\Http\Controllers\Admin\TagController::class, 'create'])->name('create');
-        Route::post('/',                        [App\Http\Controllers\Admin\TagController::class, 'store'])->name('store');
-        Route::get('/edit/{id}',                [App\Http\Controllers\Admin\TagController::class, 'edit'])->name('edit');
-        Route::post('/update/{id}',             [App\Http\Controllers\Admin\TagController::class, 'update'])->name('update');
-        Route::get('/delete/{id}',              [App\Http\Controllers\Admin\TagController::class, 'delete'])->name('delete');
+    // Tags routes
+    Route::group(['prefix' => 'tags', 'as' => 'tags.'], function () {
+        Route::get('/', [App\Http\Controllers\Admin\TagController::class, 'index'])->name('index');
+        Route::post('/store', [App\Http\Controllers\Admin\TagController::class, 'store'])->name('store');
+        Route::post('/update/{id}', [App\Http\Controllers\Admin\TagController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [App\Http\Controllers\Admin\TagController::class, 'delete'])->name('delete');
     });
+
     //Post routes
     Route::group(['prefix' => 'post',           'as' => 'post.'], function () {
         Route::get('/',                             [App\Http\Controllers\Admin\PostController::class, 'index'])->name('index');
@@ -44,5 +43,11 @@ Route::group(['prefix' => '/admin',             'as' => 'admin.', 'middleware' =
         Route::put('/update/{id}',                  [App\Http\Controllers\Admin\PostController::class, 'update'])->name('update');
         Route::get('/view/{id}',                    [App\Http\Controllers\Admin\PostController::class, 'view'])->name('view');
         Route::get('/delete/{id}',                  [App\Http\Controllers\Admin\PostController::class, 'delete'])->name('delete');
+    });
+    //User Profile
+    Route::group(['prefix' => 'profile',        'as' => 'profile.'], function () {
+        Route::get('/edit/{id}',                [App\Http\Controllers\Admin\UserProfileController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}',              [App\Http\Controllers\Admin\UserProfileController::class, 'update'])->name('update');
+        Route::put('passwordChange/{id}',       [App\Http\Controllers\Admin\UserProfileController::class, 'passwordChange'])->name('passwordChange');
     });
 });

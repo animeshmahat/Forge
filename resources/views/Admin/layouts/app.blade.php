@@ -16,7 +16,18 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/Admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link rel="{{  asset('assets/Admin/vendor/datatables/dataTables.bootstrap4.min.css') }}" href="">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        .nav-item.active {
+            background-color: #4e73df;
+        }
+
+        .nav-item.active .nav-link {
+            color: #ffffff;
+        }
+    </style>
     @yield('css')
 </head>
 
@@ -78,13 +89,17 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/Admin/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/  dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('assets/Admin/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/Admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -96,12 +111,17 @@
     <script src="{{ asset('assets/Admin/js/sb-admin-2.min.js') }}"></script>
 
     <!-- Page level plugins -->
-    <script src="{{ asset('assets/vendor/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ asset('assets/Admin/vendor/chart.js/Chart.min.js') }}"></script>
+
+    <script src="{{ asset('assets/Admin/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/Admin/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
     <!-- Page level custom scripts -->
     <script src="{{ asset('assets/Admin/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('assets/Admin/js/demo/chart-pie-demo.js') }}"></script>
+    <script src="{{ asset('assets/Admin/js/demo/datatables-demo.js') }}"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @yield('js')
 </body>
 
