@@ -93,3 +93,9 @@ Route::group(['prefix' => '/blogger',             'as' => 'blogger.', 'middlewar
         Route::put('passwordChange/{id}',       [App\Http\Controllers\Blogger\UserProfileController::class, 'passwordChange'])->name('passwordChange');
     });
 });
+
+//Site routes
+Route::group(['as' => 'site.',                  'namespace' => 'Site'], function () {
+    Route::get('/',                             [App\Http\Controllers\Site\SiteController::class, 'index'])->name('index');
+    Route::get('/post/{slug}',                  [App\Http\Controllers\Site\SiteController::class, 'single_post'])->name('single_post');
+});

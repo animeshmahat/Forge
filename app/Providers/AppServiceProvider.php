@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $all_view['category'] = DB::table('categories')->where('status', 1)->get();
+        $all_view['tags'] = DB::table('tags')->get();
         $all_view['setting'] = DB::table('settings')->first();
         View::share(compact('all_view'));
     }

@@ -13,7 +13,7 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <h2>Edit {{ $_panel }}</h2>
+        <h2>Edit Post</h2>
         <div class="card mt-3 p-3">
             <form action="{{ route('blogger.post.update', $data['row']->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf

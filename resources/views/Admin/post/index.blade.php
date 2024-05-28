@@ -70,7 +70,7 @@
                             <img src="{{ asset('/uploads/post/' . $row->thumbnail) }}" alt="thumbnail" id="thumbnail">
                         </td>
                         <td>{{ $row->views }}</td>
-                        <td>{{ $row->created_at->format('D-m-d-Y') }} by <br> <strong>{{$row->user->name}}</strong> ({{$row->user->username}})</td>
+                        <td>{{ $row->created_at->format('H:i.A D-m-d-Y') }} by <br> <strong>{{$row->user->name}}</strong> ({{$row->user->username}})</td>
                         <td>
                             @if($row->status == '1')
                             <span class="badge rounded-pill badge-success">Active</span>

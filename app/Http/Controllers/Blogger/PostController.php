@@ -98,62 +98,62 @@ class PostController extends BaseController
         return view($this->view_path . '.view', compact('data'));
     }
 
-    // public function edit($id)
-    // {
-    //     $data = [];
-    //     $data['category'] = $this->model->getCategory();
-    //     $data['tags'] = $this->model->getTags();
-    //     $data['row'] = $this->model->where('user_id', auth()->id())->findOrFail($id);
-    //     return view($this->view_path . '.edit', compact('data'));
-    // }
+    public function edit($id)
+    {
+        $data = [];
+        $data['category'] = $this->model->getCategory();
+        $data['tags'] = $this->model->getTags();
+        $data['row'] = $this->model->where('user_id', auth()->id())->findOrFail($id);
+        return view($this->view_path . '.edit', compact('data'));
+    }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $validator = $this->model->getRules($request->all());
+    public function update(Request $request, $id)
+    {
+        $validator = $this->model->getRules($request->all());
 
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->withErrors($validator)->withInput();
-    //     }
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-    //     $data = $this->model->where('user_id', auth()->id())->findOrFail($id);
-    //     $data->category_id = $request->category_id;
-    //     $data->title = $request->title;
-    //     $data->description = $request->description;
-    //     $data->status = $request->status ? true : false;
+        $data = $this->model->where('user_id', auth()->id())->findOrFail($id);
+        $data->category_id = $request->category_id;
+        $data->title = $request->title;
+        $data->description = $request->description;
+        $data->status = $request->status ? true : false;
 
-    //     if ($request->hasFile('thumbnail')) {
-    //         // Delete old thumbnail if exists
-    //         if ($data->thumbnail) {
-    //             $image_path = public_path("uploads/post/{$data->thumbnail}");
-    //             if (file_exists($image_path)) {
-    //                 unlink($image_path);
-    //             }
-    //         }
+        if ($request->hasFile('thumbnail')) {
+            // Delete old thumbnail if exists
+            if ($data->thumbnail) {
+                $image_path = public_path("uploads/post/{$data->thumbnail}");
+                if (file_exists($image_path)) {
+                    unlink($image_path);
+                }
+            }
 
-    //         $thumbnail = $request->file('thumbnail');
-    //         $imageName = time() . '.' . $thumbnail->getClientOriginalExtension();
-    //         $thumbnail->move(public_path('uploads/post'), $imageName);
-    //         $data->thumbnail = $imageName;
-    //     }
+            $thumbnail = $request->file('thumbnail');
+            $imageName = time() . '.' . $thumbnail->getClientOriginalExtension();
+            $thumbnail->move(public_path('uploads/post'), $imageName);
+            $data->thumbnail = $imageName;
+        }
 
-    //     // Save the updated post
-    //     DB::beginTransaction();
-    //     try {
-    //         $data->save();
-    //         // Sync tags
-    //         Log::info('Tags to sync', ['tags' => $request->tags]);
-    //         $data->tags()->sync($request->tags);
-    //         DB::commit();
+        // Save the updated post
+        DB::beginTransaction();
+        try {
+            $data->save();
+            // Sync tags
+            Log::info('Tags to sync', ['tags' => $request->tags]);
+            $data->tags()->sync($request->tags);
+            DB::commit();
 
-    //         // Set the update success message and redirect
-    //         $request->session()->flash('update_success', $this->panel . ' successfully updated.');
-    //         return redirect()->route($this->base_route);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         Log::error('Tag sync failed', ['error' => $e->getMessage(), 'tags' => $request->tags]);
-    //         return redirect()->back()->withErrors(['tags' => 'Tag sync failed.'])->withInput();
-    //     }
-    // }
+            // Set the update success message and redirect
+            $request->session()->flash('update_success', $this->panel . ' successfully updated.');
+            return redirect()->route($this->base_route);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Tag sync failed', ['error' => $e->getMessage(), 'tags' => $request->tags]);
+            return redirect()->back()->withErrors(['tags' => 'Tag sync failed.'])->withInput();
+        }
+    }
 
     public function delete($id)
     {

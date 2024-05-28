@@ -26,7 +26,7 @@
 @section('content')
 <div class="row">
     <div class="col">
-        <h2>{{ $_panel }} View</h2>
+        <h2>Post View</h2>
 
         <!-- information View -->
         <div class="container mt-4 p-3" style="border: 1px solid #c1c1c1; border-radius:10px;">
@@ -82,7 +82,7 @@
 
                             <!-- posted at -->
                             <div class="mb-2">
-                                <p><strong>POSTED AT:</strong> {{ $data['row']->created_at->format('D-m-d-Y') }}</p>
+                                <p><strong>POSTED AT:</strong> {{ $data['row']->created_at->format('h:i:s D-m-d-Y') }}</p>
                             </div>
 
                             <!-- Visitors -->
@@ -108,7 +108,7 @@
             <!-- description -->
             <div class="mt-2 mb-4">
                 <p><strong>CONTENT :</strong></p>
-                <div class="d-inline-flex">{!! html_entity_decode($data['row']->description) !!}</div>
+                <div>{!! html_entity_decode($data['row']->description) !!}</div>
                 <hr>
             </div>
         </div>

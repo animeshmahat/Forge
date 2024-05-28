@@ -21,7 +21,7 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Blog Posts</h1>
 
-<a href="{{ route('blogger.post.create') }}" class="btn btn-sm btn-success mb-2"><i class="fa fa-plus"></i> Add {{$_panel}}</a>
+<a href="{{ route('blogger.post.create') }}" class="btn btn-sm btn-success mb-2"><i class="fa fa-plus"></i> Add Post</a>
 
 <!-- Hidden element to pass session data to JavaScript -->
 <div id="session-data" data-success="{{ session('success') }}" data-update-success="{{ session('update_success') }}" data-delete-success="{{ session('delete_success') }}">
@@ -70,7 +70,7 @@
                             <img src="{{ asset('/uploads/post/' . $row->thumbnail) }}" alt="thumbnail" id="thumbnail">
                         </td>
                         <td>{{ $row->views }}</td>
-                        <td>{{ $row->created_at->format('D-m-d-Y') }}</td>
+                        <td>{{ $row->created_at->format('H:i.A D-m-d-Y') }}</td>
                         <td>
                             @if($row->status == '1')
                             <span class="badge rounded-pill badge-success">Active</span>
