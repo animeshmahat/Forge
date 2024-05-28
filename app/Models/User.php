@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -38,6 +39,14 @@ class User extends Authenticatable
             'mobile'        => 'required|max:20|min:7|mobile|unique:users',
             'status'        => 'boolean'
         ]);
+    }
+    public function posts()
+    {
+        return $this->hasMany(Posts::class);
+    }
+    public function getPost()
+    {
+        return DB::table('posts')->get();
     }
 
     /**

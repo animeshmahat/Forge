@@ -18,7 +18,6 @@ class CategoryController extends BaseController
     {
         $this->model = new Category;
     }
-
     public function index()
     {
         $data['row'] = DB::table('categories')->get();

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Posts;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -21,7 +23,7 @@ class UserController extends BaseController
 
     public function index()
     {
-        $data['row'] = DB::table('users')->get();
+        $data['row'] = User::withCount('posts')->get();
         return view(parent::loadDefaultDataToView($this->view_path . '.index'), compact('data'));
     }
 
@@ -61,6 +63,50 @@ class UserController extends BaseController
         } else {
             return redirect()->route($this->base_route);
         }
+    }
+    public function view(Request $request, $id)
+    {
+        $data = [];
+        $user = User::findOrFail($id);
+        $data['user'] = $user;
+
+        // Fetch total views of all posts for the user
+        $totalViews = Posts::where('user_id', $user->id)->sum('views');
+        $data['total_views'] = $totalViews;
+
+        // Fetch views count for the last month
+        $startDateLastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $endDateLastMonth = Carbon::now()->subMonth()->endOfMonth();
+        $viewsLastMonth = Posts::where('user_id', $user->id)
+            ->whereBetween('created_at', [$startDateLastMonth, $endDateLastMonth])
+            ->sum('views');
+        $data['views_last_month'] = $viewsLastMonth;
+
+        // Generate labels for chart
+        $labels = [];
+        for ($i = 1; $i <= $startDateLastMonth->daysInMonth; $i++) {
+            $labels[] = 'Day ' . $i;
+        }
+        for ($i = 1; $i <= Carbon::now()->daysInMonth; $i++) {
+            $labels[] = 'Day ' . $i;
+        }
+        $data['labels'] = $labels;
+
+        // Predict views for the next month
+        $predictedViews = [];
+        $startDateNextMonth = Carbon::now()->startOfMonth()->addMonth();
+        for ($i = 0; $i < $startDateNextMonth->daysInMonth; $i++) {
+            $date = $startDateNextMonth->copy()->addDays($i);
+            // Calculate average views for this day based on historical data
+            $averageViews = Posts::where('user_id', $user->id)
+                ->whereMonth('created_at', $date->month)
+                ->whereDay('created_at', $date->day)
+                ->avg('views');
+            $predictedViews[] = round($averageViews); // Round to nearest integer
+        }
+        $data['predicted_views'] = $predictedViews;
+
+        return view(parent::loadDefaultDataToView($this->view_path . '.view'), compact('data'));
     }
 
     public function edit(Request $request, $id)

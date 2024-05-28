@@ -42,7 +42,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        @include('admin.includes.sidebar')
+        @include('blogger.includes.sidebar')
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -52,7 +52,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                @include('admin.includes.header')
+                @include('blogger.includes.header')
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -67,7 +67,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            @include('admin.includes.footer')
+            @include('blogger.includes.footer')
             <!-- End of Footer -->
 
         </div>

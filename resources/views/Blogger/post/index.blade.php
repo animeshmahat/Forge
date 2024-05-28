@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('blogger.layouts.app')
 
 @section('title', 'Blogs')
 
@@ -21,7 +21,7 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Blog Posts</h1>
 
-<a href="{{ route('admin.post.create') }}" class="btn btn-sm btn-success mb-2"><i class="fa fa-plus"></i> Add {{$_panel}}</a>
+<a href="{{ route('blogger.post.create') }}" class="btn btn-sm btn-success mb-2"><i class="fa fa-plus"></i> Add {{$_panel}}</a>
 
 <!-- Hidden element to pass session data to JavaScript -->
 <div id="session-data" data-success="{{ session('success') }}" data-update-success="{{ session('update_success') }}" data-delete-success="{{ session('delete_success') }}">
@@ -42,7 +42,7 @@
                         <th>Category</th>
                         <th>Thumbnail</th>
                         <th>Views</th>
-                        <th>Posted On & By</th>
+                        <th>Posted On</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -54,7 +54,7 @@
                         <th>Category</th>
                         <th>Thumbnail</th>
                         <th>Views</th>
-                        <th>Posted On & By</th>
+                        <th>Posted On</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -70,7 +70,7 @@
                             <img src="{{ asset('/uploads/post/' . $row->thumbnail) }}" alt="thumbnail" id="thumbnail">
                         </td>
                         <td>{{ $row->views }}</td>
-                        <td>{{ $row->created_at->format('D-m-d-Y') }} by <br> <strong>{{$row->user->name}}</strong> ({{$row->user->username}})</td>
+                        <td>{{ $row->created_at->format('D-m-d-Y') }}</td>
                         <td>
                             @if($row->status == '1')
                             <span class="badge rounded-pill badge-success">Active</span>
@@ -80,8 +80,9 @@
                         </td>
                         <td>
                             <div class="d-flex flex-row align-items-center">
-                                <a href="{{ route('admin.post.view', ['id' => $row->id]) }}" class="btn btn-primary btn-sm m-1"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View</a>
-                                <a href="{{ route('admin.post.delete', ['id' => $row->id]) }}" class="btn btn-danger btn-sm m-1" onclick="return confirm('Permanently delete this record?')"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Delete</a>
+                                <a href="{{ route('blogger.post.view', ['id' => $row->id]) }}" class="btn btn-primary btn-sm m-1"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;View</a>
+                                <a href="{{ route('blogger.post.edit', ['id' => $row->id]) }}" class="btn btn-warning btn-sm m-1"><i class="fa fa-pen"></i>&nbsp;Edit</a>
+                                <a href="{{ route('blogger.post.delete', ['id' => $row->id]) }}" class="btn btn-danger btn-sm m-1" onclick="return confirm('Permanently delete this record?')"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Delete</a>
                             </div>
                         </td>
                     </tr>
