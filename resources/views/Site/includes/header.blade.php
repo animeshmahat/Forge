@@ -9,22 +9,21 @@
 
          <nav id="navbar" class="navbar">
              <ul>
-                 <li><a href="index.html">Blog</a></li>
-                 <li><a href="single-post.html">Single Post</a></li>
+                 <li><a href="{{route('site.index')}}">Home</a></li>
+                 <li><a href="#">Empty</a></li>
                  <li class="dropdown"><a href="#"><span>Categories</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
                      <ul>
-                         @if(isset($all_view['category']))
+                         @if(isset($all_view['category']) && $all_view['category']->isNotEmpty())
                          @foreach($all_view['category'] as $category)
-                         @if($loop->index<5) <li><a href="#">{{$category->name}}</a>
+                         @if($loop->index<7) <li><a href="{{route('site.category', $category->name)}}">{{$category->name}}</a>
                  </li>
                  @endif
                  @endforeach
                  @endif
              </ul>
              </li>
-
-             <li><a href="about.html">About</a></li>
-             <li><a href="contact.html">Contact</a></li>
+             <li><a href="#">About</a></li>
+             <li><a href="{{route('site.contact_us')}}">Contact</a></li>
              </ul>
          </nav><!-- .navbar -->
 

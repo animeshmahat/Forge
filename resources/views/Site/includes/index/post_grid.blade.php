@@ -8,9 +8,13 @@
                     <a href="{{ route('site.single_post', $data['random']->slug)}}"><img src="{{ asset('/uploads/post/' . $data['random']->thumbnail) }}" alt="" class="img-fluid"></a>
                     <div class="post-meta"><span class="date">{{$data['random']->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$data['random']->created_at->format('Y-m-d')}}</span></div>
                     <h2><a href="{{ route('site.single_post', $data['random']->slug)}}">{{$data['random']->title}}</a></h2>
-                    <p class="mb-4 d-block">{{ substr(strip_tags($data['random']->description), 0, 300) }}.....</p>
+                    <p class="mb-4 d-block">{{ substr(strip_tags($data['random']->description), 0, 909) }}.....</p>
                     <div class="d-flex align-items-center author">
-                        <div class="photo"><img src="{{ asset('/uploads/user_image/' . $data['random']->user->image) }}" alt="{{$data['random']->title}}" class="img-fluid"></div>
+                        <div class="photo">@if(isset($data['random']->user->image))<img src="{{ asset('/uploads/user_image/' . $data['random']->user->image) }}" alt="{{$data['random']->title}}" class="img-fluid">
+                            @else
+                            <img src="{{asset('assets/site/blogger.gif')}}" alt="" class="img-fluid">
+                            @endif
+                        </div>
                         <div class="name">
                             <h3 class="m-0 p-0">{{$data['random']->user->name}}</h3>
                         </div>
@@ -50,11 +54,11 @@
             <div class="col-lg-4">
 
                 <div class="trending">
-                    <h3>Trending</h3>
+                    <h3><i class="fa-solid fa-fire"></i> Trending</h3>
                     <ul class="trending-post">
                         @if(isset($data['trending']))
                         @foreach($data['trending'] as $key=>$row)
-                        @if($loop->index<5) <li>
+                        @if($loop->index<6) <li>
                             <a href="{{ route('site.single_post', $row->slug)}}">
                                 <span class="number">{{$key+1}}</span>
                                 <h3>{{$row->title}}</h3>
