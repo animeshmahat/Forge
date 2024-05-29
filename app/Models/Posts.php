@@ -52,7 +52,7 @@ class Posts extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comments::class);
+        return $this->hasMany(Comments::class, 'post_id');
     }
     public function tags()
     {

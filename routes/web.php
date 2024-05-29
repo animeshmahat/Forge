@@ -98,4 +98,5 @@ Route::group(['prefix' => '/blogger',             'as' => 'blogger.', 'middlewar
 Route::group(['as' => 'site.',                  'namespace' => 'Site'], function () {
     Route::get('/',                             [App\Http\Controllers\Site\SiteController::class, 'index'])->name('index');
     Route::get('/post/{slug}',                  [App\Http\Controllers\Site\SiteController::class, 'single_post'])->name('single_post');
+    Route::post('/post/{post_id}/comment',      [App\Http\Controllers\Admin\CommentController::class, 'store'])->name('comment.store');
 });
