@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         $all_view['category'] = DB::table('categories')->where('status', 1)->get();
         $all_view['tags'] = DB::table('tags')->get();
         $all_view['setting'] = DB::table('settings')->first();
-        $all_view['recent_posts'] = Posts::where('status', 1)->take(4)->get();
+        $all_view['recent_posts'] = Posts::where('status', 1)->orderBy('created_at', 'DESC')->take(4)->get();
         View::share(compact('all_view'));
     }
 }

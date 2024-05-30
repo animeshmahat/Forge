@@ -9,7 +9,6 @@ use App\Models\Posts;
 use App\Models\PostView;
 use App\Models\Tags;
 use App\Services\PostService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -45,6 +44,7 @@ class SiteController extends BaseController
             ->get();
 
         $trending = $this->postService->getTrendingPosts();
+
         $data = [
             'post' => $post,
             'random' => $random,
@@ -132,5 +132,10 @@ class SiteController extends BaseController
     public function contact_us()
     {
         return view('site.contact-us');
+    }
+
+    public function about_us()
+    {
+        return view('site.about-us');
     }
 }

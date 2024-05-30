@@ -102,4 +102,5 @@ Route::group(['as' => 'site.',                  'namespace' => 'Site'], function
     Route::get('/category/{name}',              [App\Http\Controllers\Site\SiteController::class, 'category'])->name('category');
     Route::get('/contact_us',                   [App\Http\Controllers\Site\SiteController::class, 'contact_us'])->name('contact_us');
     Route::post('/',                            [App\Http\Controllers\Admin\ContactUsController::class, 'store'])->name('contact.store');
+    Route::get('/about_us',                     [App\Http\Controllers\Site\SiteController::class, 'about_us'])->name('about_us');
 });

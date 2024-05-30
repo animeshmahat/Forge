@@ -8,7 +8,7 @@
                     <a href="{{ route('site.single_post', $data['random']->slug)}}"><img src="{{ asset('/uploads/post/' . $data['random']->thumbnail) }}" alt="" class="img-fluid"></a>
                     <div class="post-meta"><span class="date">{{$data['random']->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$data['random']->created_at->format('Y-m-d')}}</span></div>
                     <h2><a href="{{ route('site.single_post', $data['random']->slug)}}">{{$data['random']->title}}</a></h2>
-                    <p class="mb-4 d-block">{{ substr(strip_tags($data['random']->description), 0, 909) }}.....</p>
+                    <p class="mb-4 d-block">{{ substr(strip_tags($data['random']->description), 0, 500) }}.....</p>
                     <div class="d-flex align-items-center author">
                         <div class="photo">@if(isset($data['random']->user->image))<img src="{{ asset('/uploads/user_image/' . $data['random']->user->image) }}" alt="{{$data['random']->title}}" class="img-fluid">
                             @else

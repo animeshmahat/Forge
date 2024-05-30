@@ -6,16 +6,15 @@
             <div class="row g-5">
                 <div class="col-lg-4">
                     <h3 class="footer-heading">About Forge</h3>
-                    <p>{{$all_view['setting']->site_description}}</p>
-                    <p><a href="about.html" class="footer-link-more">Learn More</a></p>
+                    <p>{!! $all_view['setting']->site_description !!}</p>
+                    <p><a href="{{route('site.about_us')}}" class="footer-link-more">Learn More</a></p>
                 </div>
                 <div class="col-6 col-lg-2">
                     <h3 class="footer-heading">Navigation</h3>
                     <ul class="footer-links list-unstyled">
                         <li><a href="{{route('site.index')}}"><i class="bi bi-chevron-right"></i> Home</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Categories</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> About us</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Contact</a></li>
+                        <li><a href="{{route('site.about_us')}}"><i class="bi bi-chevron-right"></i> About us</a></li>
+                        <li><a href="{{route('site.contact_us')}}"><i class="bi bi-chevron-right"></i> Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-lg-2">
@@ -37,7 +36,7 @@
                         @if(isset($all_view['recent_posts']))
                         @foreach($all_view['recent_posts'] as $row)
                         <li>
-                            <a href="single-post.html" class="d-flex align-items-center">
+                            <a href="{{route('site.single_post', $row->slug)}}" class="d-flex align-items-center">
                                 <img src="{{asset('/uploads/post/' . $row->thumbnail)}}" alt="" class="img-fluid me-3">
                                 <div>
                                     <div class="post-meta d-block"><span class="date">{{$row->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$row->created_at->format('d-M-Y')}}</span></div>

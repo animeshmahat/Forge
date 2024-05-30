@@ -39,7 +39,7 @@ class SettingController extends BaseController
         $data->site_description             = $request->site_description;
         $data->meta_description             = $request->meta_description;
         $data->meta_keywords                = $request->seo;
-        $data->stie_url                     = $request->site_url;
+        $data->site_url                     = $request->site_url;
         $success = $data->save();
 
         if ($success) {

@@ -22,7 +22,7 @@
                  @endif
              </ul>
              </li>
-             <li><a href="#">About</a></li>
+             <li><a href="{{route('site.about_us')}}">About</a></li>
              <li><a href="{{route('site.contact_us')}}">Contact</a></li>
              </ul>
          </nav><!-- .navbar -->
