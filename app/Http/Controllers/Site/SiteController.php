@@ -11,6 +11,7 @@ use App\Models\Tags;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
 
 class SiteController extends BaseController
 {
@@ -100,7 +101,8 @@ class SiteController extends BaseController
     {
         $category = Category::where('name', $name)->firstOrFail();
         $category_id = $category->id;
-        $post = Posts::where('category_id', $category_id)->where('status', 1)->get();
+        $post = Posts::where('category_id', $category_id)->where('status', 1)->paginate('10');
+        Paginator::useBootstrap();
 
         // Sidebar data (same as category page)
         // Categories with most posts
@@ -133,9 +135,62 @@ class SiteController extends BaseController
     {
         return view('site.contact-us');
     }
-
     public function about_us()
     {
         return view('site.about-us');
+    }
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $results = Posts::where('title', 'like', "%$search%")
+            ->orWhereHas('category', function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%");
+            })
+            ->orWhereHas('tags', function ($query) use ($search) {
+                $query->where('name', 'like', "%$search%");
+            })
+            ->where('status', 1)
+            ->orderBy('views', 'DESC')
+            ->paginate('10');
+        Paginator::useBootstrap();
+
+
+        // Sidebar data (same as category page)
+        // Categories with most posts
+        $categories = Category::where('status', 1)->get();
+        $categoriesWithMostPosts = Category::withCount(['posts' => function ($query) {
+            $query->where('status', 1);
+        }])->where('status', 1)->orderBy('posts_count', 'DESC')->get();
+        // Get tags with most posts
+        $tagsWithMostPosts = Tags::withCount(['posts' => function ($query) {
+            $query->where('status', 1);
+        }])->orderBy('posts_count', 'DESC')->get();
+        $popularPosts = Posts::where('status', 1)->orderBy('views', 'DESC')->take(7)->get();
+        $trendingPosts = $this->postService->getTrendingPosts();
+        $latest = Posts::where('status', 1)->orderBy('created_at', 'DESC')->take(7)->get();
+
+        $data = [
+            'categoriesWithMostPosts' => $categoriesWithMostPosts,
+            'tagsWithMostPosts' => $tagsWithMostPosts,
+            'popularPosts' => $popularPosts,
+            'trendingPosts' => $trendingPosts,
+            'latest' => $latest,
+        ];
+        return view(parent::loadDefaultDataToView($this->view_path . '.search'), compact('data'), ['results' => $results, 'search' => $search,]);
+    }
+    public function autocomplete(Request $request)
+    {
+        $search = $request->input('search');
+        $suggestions = Posts::where('title', 'like', "%$search%")
+            ->where('status', 1)
+            ->orderByRaw("CASE 
+                            WHEN title LIKE ? THEN 1
+                            ELSE 2
+                          END, title", ["$search%"])
+            ->limit(5) // Limit the number of suggestions to 5
+            ->get(['title', 'slug']); // Retrieve both title and slug
+
+        return response()->json($suggestions);
     }
 }

@@ -19,36 +19,31 @@
                         <img src="{{ asset('/uploads/post/' . $row->thumbnail) }}" alt="" class="img-fluid">
                     </a>
                     <div>
-                        <div class="post-meta"><span class="date">Culture</span> <span class="mx-1">&bullet;</span> <span>{{$row->created_at->format('Y-m-d')}}</span></div>
+                        <div class="post-meta"><span class="date">{{$row->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$row->created_at->format('Y-m-d')}}</span></div>
                         <h3><a href="{{ route('site.single_post', $row->slug)}}">{{$row->title}}</a></h3>
                         <p>{{ substr(strip_tags($row->description), 0, 300) }}.........</p>
                         <div class="d-flex align-items-center author">
-                            <div class="photo"><img src="{{ asset('/uploads/user_image/' . $row->image) }}" alt="" class="img-fluid"></div>
-                            <div class="name">
+                            @if(isset($row->user->image))
+                            <div class="photo"><img src="{{asset('/uploads/user_image/' . $row->user->image)}}" alt="" class="img-fluid"></div>
+                            @else
+                            <div class="photo"><img src="{{asset('/assets/Site/usericon.jpg')}}" alt="" class="img-fluid"></div>
+                            @endif <div class="name">
                                 <h3 class="m-0 p-0">{{$row->user->name}}</h3>
                             </div>
                         </div>
                     </div>
                 </div>
                 @endforeach
+                <!-- Paging -->
+                <div class="text-start py-4">
+                    {{ $data['post']->links() }} <!-- Use $data['post'] instead of $results -->
+                </div><!-- End Paging -->
                 @else
                 <div>
                     <h3>&nbsp;&nbsp;No Blogs To Show <i class="fa-solid fa-face-meh"></i></h3>
                     <img src="{{asset('assets/Site/oops.gif')}}" alt="">
                 </div>
                 @endif
-
-                <div class="text-start py-4">
-                    <div class="custom-pagination">
-                        <a href="#" class="prev">Prevous</a>
-                        <a href="#" class="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                        <a href="#">5</a>
-                        <a href="#" class="next">Next</a>
-                    </div>
-                </div>
             </div>
             @include('site.includes.sidebar')
         </div>

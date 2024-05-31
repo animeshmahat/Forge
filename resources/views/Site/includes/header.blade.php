@@ -32,18 +32,93 @@
              <a href="{{$all_view['setting']->social_profile_twitter}}" target="_blank" class="mx-2"><span class="bi-twitter"></span></a>
              <a href="{{$all_view['setting']->social_profile_insta}}" target="_blank" class="mx-2"><span class="bi-instagram"></span></a>
 
-             <a href="#" class="mx-2 js-search-open"><span class="bi-search"></span></a>
+             <a href="{{route('site.search')}}" class="mx-2 js-search-open"><span class="bi-search"></span></a>
              <i class="bi bi-list mobile-nav-toggle"></i>
 
              <!-- ======= Search Form ======= -->
              <div class="search-form-wrap js-search-form-wrap">
-                 <form action="search-result.html" class="search-form">
+                 <form action="{{ route('site.search') }}" class="search-form" method="GET">
                      <span class="icon bi-search"></span>
-                     <input type="text" placeholder="Search" class="form-control">
-                     <button class="btn js-search-close"><span class="bi-x"></span></button>
+                     <input type="text" id="search" name="search" placeholder="Search" class="form-control">
+                     <button class="btn js-search-close" type="submit"><span class="bi-x"></span></button>
                  </form>
-             </div><!-- End Search Form -->
+                 <ul id="suggestions" style="display: none;"></ul>
 
+                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                 <script>
+                     $(document).ready(function() {
+                         $('#search').on('input', function() {
+                             let query = $(this).val().trim();
+
+                             if (query.length > 0) {
+                                 $.ajax({
+                                     url: '{{ route("site.autocomplete") }}',
+                                     data: {
+                                         search: query
+                                     },
+                                     success: function(data) {
+                                         let suggestions = $('#suggestions');
+                                         suggestions.empty();
+
+                                         if (data.length > 0) {
+                                             suggestions.show();
+                                             data.forEach(function(post) {
+                                                 let highlightedTitle = post.title.replace(
+                                                     new RegExp("\\b" + query + "\\b", 'gi'),
+                                                     (match) => `<span class="highlight">${match}</span>`
+                                                 );
+                                                 suggestions.append('<li data-slug="' + post.slug + '">' + highlightedTitle + '</li>');
+                                             });
+                                         } else {
+                                             suggestions.hide();
+                                         }
+                                     },
+                                     error: function(xhr, status, error) {
+                                         console.error("AJAX Error: " + status + error);
+                                     }
+                                 });
+                             } else {
+                                 $('#suggestions').hide();
+                             }
+                         });
+
+                         $(document).on('click', '#suggestions li', function() {
+                             let slug = $(this).data('slug');
+                             let url = '{{ route("site.single_post", ":slug") }}';
+                             url = url.replace(':slug', slug);
+                             window.location.href = url;
+                         });
+                     });
+                 </script>
+
+                 <style>
+                     #suggestions {
+                         border: 1px solid #ccc;
+                         background: #fff;
+                         list-style: none;
+                         padding: 0;
+                         margin: 0;
+                         position: absolute;
+                         width: 300px;
+                         z-index: 1000;
+                     }
+
+                     #suggestions li {
+                         padding: 8px;
+                         cursor: pointer;
+                     }
+
+                     #suggestions li:hover {
+                         background: #f0f0f0;
+                     }
+
+                     .highlight {
+                         background-color: yellow;
+                     }
+                 </style>
+             </div>
+
+             <!-- End Search Form -->
          </div>
 
      </div>

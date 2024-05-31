@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Site\SiteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -103,4 +104,6 @@ Route::group(['as' => 'site.',                  'namespace' => 'Site'], function
     Route::get('/contact_us',                   [App\Http\Controllers\Site\SiteController::class, 'contact_us'])->name('contact_us');
     Route::post('/',                            [App\Http\Controllers\Admin\ContactUsController::class, 'store'])->name('contact.store');
     Route::get('/about_us',                     [App\Http\Controllers\Site\SiteController::class, 'about_us'])->name('about_us');
+    Route::get('/search',                       [App\Http\Controllers\Site\SiteController::class, 'search'])->name('search');
+    Route::get('/autocomplete',                 [App\Http\Controllers\Site\SiteController::class, 'autocomplete'])->name('autocomplete');
 });
