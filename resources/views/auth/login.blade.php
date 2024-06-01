@@ -13,7 +13,7 @@
                     <div class="col-lg-12">
                         <div class="p-5">
                             <div class="text-center">
-                                <img src="#" alt="Logo" width="150">
+                                <img src="{{$all_view['setting']->logo}}" alt="Logo" width="150" class="p-2">
                                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                             </div>
                             <form class="user" method="POST" action="{{ route('login') }}">

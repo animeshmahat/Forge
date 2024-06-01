@@ -21,7 +21,7 @@
                     <div>
                         <div class="post-meta"><span class="date">{{$row->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$row->created_at->format('Y-m-d')}}</span></div>
                         <h3><a href="{{ route('site.single_post', $row->slug)}}">{{$row->title}}</a></h3>
-                        <p>{{ substr(strip_tags($row->description), 0, 300) }}.........</p>
+                        <p>{!! html_entity_decode(substr(($row->description), 0, 250)) !!}.........</p>
                         <div class="d-flex align-items-center author">
                             @if(isset($row->user->image))
                             <div class="photo"><img src="{{asset('/uploads/user_image/' . $row->user->image)}}" alt="" class="img-fluid"></div>

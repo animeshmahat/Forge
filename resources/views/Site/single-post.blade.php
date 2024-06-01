@@ -6,35 +6,74 @@
         max-width: 70vw;
         object-fit: contain;
     }
+
+    .tab {
+        overflow: hidden;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
+
+    .tab button:hover {
+        background-color: #ddd;
+    }
+
+    .tab button.active {
+        background-color: #ccc;
+    }
+
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border-top: none;
+    }
 </style>
 @endsection
+
 @section('content')
 <section class="single-post-content">
     <div class="container">
         <div class="row">
             <div class="col-md-9 post-content" data-aos="fade-up">
-
-                <!-- ======= Single Post Content ======= -->
                 <div class="single-post">
-                    <div class="post-meta"><span class="date">{{$data['post']->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$data['post']->created_at->format('Y-m-d D')}}</span></div>
-                    <div class="post-meta"><i class="fa fa-eye"></i> <span>{{$data['post']->views}} views</span></div>
-                    @if($data['post']->created_at != $data['post']->updated_at)<span style="font-weight:itallic;">Updated at : {{$data['post']->updated_at->format('D Y-m-d')}} at {{$data['post']->updated_at->format('H:i A')}}</span>@endif
-                    <h1 class="mb-5">{{$data['post']->title}}</h1>
+                    <div class="post-meta">
+                        <span class="date">{{ $data['post']->category->name }}</span>
+                        <span class="mx-1">&bullet;</span>
+                        <span>{{ $data['post']->created_at->format('Y-m-d D') }}</span>
+                        <span><i>({{ $data['readingTime'] }} minute read)</i></span>
+                    </div>
+                    <div class="post-meta">
+                        <i class="fa fa-eye"></i>
+                        <span>{{ $data['post']->views }} views</span>
+                    </div>
+                    @if($data['post']->created_at != $data['post']->updated_at)
+                    <span style="font-weight: italic;">Updated at : {{ $data['post']->updated_at->format('D Y-m-d') }} at {{ $data['post']->updated_at->format('H:i A') }}</span>
+                    <span>
+                        <button class="btn btn-sm btn-outline-dark" id="summarizeBtn" style="font-family:'Times New Roman', Times, serif;">SUMMARIZE</button>
+                    </span>
+                    @endif
+                    <h1 class="mb-5">{{ $data['post']->title }}</h1>
 
                     <figure class="my-4">
                         <img src="{{ asset('/uploads/post/' . $data['post']->thumbnail) }}" alt="" class="img-fluid">
                     </figure>
                     <p>{!! html_entity_decode($data['post']->description) !!}</p>
-                    <div class="post-meta">Posted by {{$data['post']->user->name}} ({{$data['post']->user->username}})</div>
-
-                </div><!-- End Single Post Content -->
+                    <div class="post-meta">Posted by {{ $data['post']->user->name }} ({{ $data['post']->user->username }})</div>
+                </div>
 
                 <!-- Comments -->
                 <div class="comments">
                     <h5 class="comment-title py-4">{{ $data['comments']->count() }} Comments</h5>
                     @foreach($data['comments'] as $comment)
                     @if(!$comment->parent_id)
-                    <!-- Display only parent comments -->
                     <div class="comment d-flex mb-4">
                         <div class="flex-shrink-0">
                             <div class="avatar avatar-sm rounded-circle">
@@ -76,7 +115,6 @@
 
                             <a href="javascript:void(0);" class="reply-link" data-comment-id="{{ $comment->id }}" style="color:red;">Reply</a>
 
-                            <!-- Reply Form -->
                             <div class="reply-form" id="reply-form-{{ $comment->id }}" style="display:none;">
                                 <form action="{{ route('site.comment.store', ['post_id' => $data['post']->id]) }}" method="POST">
                                     @csrf
@@ -97,15 +135,12 @@
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
                             </div>
-                            <!-- End Reply Form -->
                         </div>
                     </div>
                     @endif
                     @endforeach
                 </div>
-                <!-- End Comments -->
 
-                <!-- Comments Form -->
                 <div class="row justify-content-center mt-5">
                     <div class="col-lg-12">
                         <h5 class="comment-title">Leave a Comment</h5>
@@ -117,21 +152,21 @@
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name">
                                     @error('name')
-                                    <p class="alert alert-danger">{{$message}}</p>
+                                    <p class="alert alert-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="text" id="email" name="email" class="form-control" placeholder="Enter your email">
                                     @error('email')
-                                    <p class="alert alert-danger">{{$message}}</p>
+                                    <p class="alert alert-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="col-12 mb-3">
                                     <label for="message" class="form-label">Message</label>
                                     <textarea class="form-control" id="message" name="message" placeholder="Enter your message" cols="10" rows="10"></textarea>
                                     @error('message')
-                                    <p class="alert alert-danger">{{$message}}</p>
+                                    <p class="alert alert-danger">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 @if ($errors->any())
@@ -150,30 +185,81 @@
                         </form>
                     </div>
                 </div>
-                <!-- End Comments Form -->
-
             </div>
             @include('site.includes.sidebar')
         </div>
     </div>
 </section>
-@endsection
-@section('js')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const replyLinks = document.querySelectorAll('.reply-link');
-        replyLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                const commentId = this.getAttribute('data-comment-id');
-                const replyForm = document.getElementById(`reply-form-${commentId}`);
-                if (replyForm.style.display === 'none' || replyForm.style.display === '') {
-                    replyForm.style.display = 'block';
-                } else {
-                    replyForm.style.display = 'none';
-                }
-            });
-        });
-    });
-</script>
 
+<!-- Summarization Modal -->
+<div class="modal fade" id="summarizeModal" tabindex="-1" role="dialog" aria-labelledby="summarizeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="summarizeModalLabel">Summary</h5>
+            </div>
+            <div class="modal-body">
+                <!-- Tab links -->
+                <div class="tab">
+                    <button class="tablinks" onclick="openSummary(event, 'BulletPoints')" id="defaultOpen">Points</button>
+                    <button class="tablinks" onclick="openSummary(event, 'Paragraph')">Paragraph</button>
+                </div>
+
+                <!-- Tab content -->
+                <div id="Paragraph" class="tabcontent">
+                    <p id="paragraphSummary">{!! $data['paragraph_summary'] !!}</p>
+                </div>
+
+                <div id="BulletPoints" class="tabcontent">
+                    <ul id="bulletPointsSummary">
+                        @if(is_array($data['bullet_point_summary']) && count($data['bullet_point_summary']) > 0)
+                        @foreach($data['bullet_point_summary'] as $bullet)
+                        <li>{!! $bullet !!}</li>
+                        @endforeach
+                        @else
+                        <li>No bullet points available.</li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p>Press <span><i>Esc</i></span> to escape.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@endsection
+
+@section('js')
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#summarizeBtn').click(function() {
+            $('#summarizeModal').modal('show');
+        });
+
+        $('.reply-link').click(function() {
+            var commentId = $(this).data('comment-id');
+            $('#reply-form-' + commentId).toggle();
+        });
+
+        document.getElementById("defaultOpen").click();
+    });
+
+    function openSummary(evt, summaryType) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(summaryType).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>
 @endsection

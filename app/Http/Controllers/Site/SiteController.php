@@ -12,6 +12,7 @@ use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Str;
 
 class SiteController extends BaseController
 {
@@ -72,18 +73,22 @@ class SiteController extends BaseController
         $comments = Comments::where('post_id', $post_id)->get();
 
         // Sidebar data (same as category page)
-        // Categories with most posts
         $categories = Category::where('status', 1)->get();
         $categoriesWithMostPosts = Category::withCount(['posts' => function ($query) {
             $query->where('status', 1);
         }])->where('status', 1)->orderBy('posts_count', 'DESC')->get();
-        // Get tags with most posts
         $tagsWithMostPosts = Tags::withCount(['posts' => function ($query) {
             $query->where('status', 1);
         }])->orderBy('posts_count', 'DESC')->get();
         $popularPosts = Posts::where('status', 1)->orderBy('views', 'DESC')->take(7)->get();
         $trendingPosts = $this->postService->getTrendingPosts();
         $latest = Posts::where('status', 1)->orderBy('created_at', 'DESC')->take(7)->get();
+
+        $summaries = $this->postService->summarizeText($post->title, $post->description);
+
+        // Calculate reading time (words per minute)
+        $wordCount = str_word_count(strip_tags($post->description));
+        $readingTime = ceil($wordCount / 238); // Assuming 200 words per minute
 
         $data = [
             'post' => $post,
@@ -94,7 +99,14 @@ class SiteController extends BaseController
             'popularPosts' => $popularPosts,
             'trendingPosts' => $trendingPosts,
             'latest' => $latest,
+            'paragraph_summary' => $summaries['paragraph'] ?? '',
+            'bullet_point_summary' => $summaries['bullet_points'] ?? [],
+            'readingTime' => $readingTime, // Pass reading time to the view
         ];
+
+        // Debugging: Log the data to ensure it's correct
+        \Log::info($data);
+
         return view(parent::loadDefaultDataToView($this->view_path . '.single-post'), compact('data'));
     }
     public function category(Request $request, $name)
